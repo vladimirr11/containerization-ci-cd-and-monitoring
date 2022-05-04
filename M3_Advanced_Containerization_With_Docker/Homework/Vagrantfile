@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+    config.vm.define "manager" do |manager|
+        manager.vm.box = "shekeriev/centos-stream-8"
+        manager.vm.hostname = "manager.do1.lab"
+        manager.vm.network "private_network", ip: "192.168.99.101"
+        manager.vm.synced_folder ".", "/swarm"
+        manager.vm.provision "shell", path: "docker_setup.sh"
+        manager.vm.provision "shell", path: "hosts_and_firewall_setup.sh"
+        manager.vm.provision "shell", path: "docker_swarm_setup.sh"
+        manager.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+    end
+	
+    config.vm.define "worker1" do |worker1|
+        worker1.vm.box = "shekeriev/centos-stream-8"
+        worker1.vm.hostname = "worker1.do1.lab"
+        worker1.vm.network "private_network", ip: "192.168.99.102"
+        worker1.vm.synced_folder ".", "/swarm"
+        worker1.vm.provision "shell", path: "docker_setup.sh"
+        worker1.vm.provision "shell", path: "hosts_and_firewall_setup.sh"
+        worker1.vm.provision "shell", path: "worker1_setup.sh"
+        worker1.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+    end
+	
+    config.vm.define "worker2" do |worker2|
+        worker2.vm.box = "shekeriev/centos-stream-8"
+        worker2.vm.hostname = "worker2.do1.lab"
+        worker2.vm.network "private_network", ip: "192.168.99.103"
+        worker2.vm.synced_folder ".", "/swarm"
+        worker2.vm.provision "shell", path: "docker_setup.sh"
+        worker2.vm.provision "shell", path: "hosts_and_firewall_setup.sh"
+        worker2.vm.provision "shell", path: "worker2_setup.sh"
+        worker2.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+    end  
+
+end
