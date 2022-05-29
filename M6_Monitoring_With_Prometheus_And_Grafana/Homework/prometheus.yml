@@ -1,0 +1,15 @@
+# global config
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# A scrape configuration containing exactly one endpoint to scrape
+scrape_configs:
+  - job_name: "docker"
+    static_configs:
+      - targets: ["192.168.99.101:9323"]
+
+  - job_name: "goapp"
+    static_configs:
+      - targets: ["192.168.99.101:8081"]
+      - targets: ["192.168.99.101:8082"]
