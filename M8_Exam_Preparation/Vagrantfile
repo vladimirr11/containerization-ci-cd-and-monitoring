@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.ssh.insert_key = false
+
+    config.vm.define "vm101" do |vm101|
+        vm101.vm.box = "shekeriev/centos-stream-8"
+        vm101.vm.hostname = "vm101.do1.exam"
+        vm101.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+        vm101.vm.network "private_network", ip: "192.168.150.101"
+        vm101.vm.network "forwarded_port", guest: 8080, host: 8080
+        vm101.vm.provision "shell", path: "add_hosts.sh"
+        vm101.vm.provision "shell", path: "install_jenkins.sh"
+        vm101.vm.provision "shell", path: "install_node_exporter.sh"
+    end
+  
+    config.vm.define "vm102" do |vm102|
+        vm102.vm.box = "shekeriev/centos-stream-8"
+        vm102.vm.hostname = "vm102.do1.exam"
+        vm102.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+        vm102.vm.network "private_network", ip: "192.168.150.102"
+        vm102.vm.network "forwarded_port", guest: 8080, host: 8081
+        vm102.vm.provision "shell", path: "add_hosts.sh"
+        vm102.vm.provision "shell", path: "install_docker.sh"
+        vm102.vm.provision "shell", path: "run_gitea.sh"
+        vm102.vm.provision "shell", path: "install_node_exporter.sh"
+    end
+  
+    config.vm.define "vm103" do |vm103|
+        vm103.vm.box = "shekeriev/centos-stream-8"
+        vm103.vm.hostname = "vm103.do1.exam"
+        vm103.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "3072"]
+        end
+        vm103.vm.network "private_network", ip: "192.168.150.103"
+        vm103.vm.network "forwarded_port", guest: 9090, host: 8082
+        vm103.vm.network "forwarded_port", guest: 3000, host: 8083
+        vm103.vm.provision "shell", path: "add_hosts.sh"
+        vm103.vm.provision "shell", path: "install_promgraf.sh"
+    end
+
+end
